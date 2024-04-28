@@ -1,22 +1,37 @@
 const allButtonsElm = document.querySelectorAll(".btn");
 const displayElm = document.querySelector(".display");
 let strToDisplay = "";
+const operators = ["%", "+", "-", "/", "*"];
 
 const buttonAction = (value) => {
   if (value === "AC") {
     strToDisplay = "";
     return display(strToDisplay);
   }
-  if (value === "=") {
-    const total = eval(strToDisplay);
-    display(total);
-    return;
+  if (value === "C") {
+    strToDisplay = strToDisplay.slice(0, -1);
+    return display(strToDisplay);
   }
+
+  if (value === "=") {
+    const lastChar = strToDisplay[strToDisplay.length - 1];
+    if (operators.includes(lastChar)) {
+      strToDisplay = strToDisplay.slice(0, -1);
+    }
+    return displayTotal();
+  }
+
+  if (operators.includes(value)) {
+    const lastChar = strToDisplay[strToDisplay.length - 1];
+    if (operators.includes(lastChar)) {
+      strToDisplay = strToDisplay.slice(0, -1);
+    }
+  }
+
   strToDisplay += value;
   display(strToDisplay);
 };
 
-// attached click event to all the buttons
 allButtonsElm.forEach((btn) => {
   btn.addEventListener("click", () => {
     const value = btn.innerText;
@@ -24,12 +39,12 @@ allButtonsElm.forEach((btn) => {
   });
 });
 
-// update clicked button value to display area
 const display = (str) => {
   displayElm.innerText = str || "0.0";
 };
 
-// calculate total
-// const displayTotal = () => {
-//   const total = eval(strToDisplay);
-// };
+const displayTotal = () => {
+  const total = eval(strToDisplay);
+  strToDisplay = total;
+  display(strToDisplay);
+};
